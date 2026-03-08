@@ -26,11 +26,11 @@ npx skill add vltansky/agents-md-evals
 ## Usage
 
 Ask Claude Code:
-- "eval my agents.md"
-- "which rules in my agents.md actually matter?"
+- "eval my AGENTS.md"
+- "which rules in my AGENTS.md actually matter?"
 - "optimize my instructions"
 - "trim my agents file"
-- "test my claude.md"
+- "test my CLAUDE.md"
 
 ## Key Concepts
 

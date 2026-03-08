@@ -105,7 +105,7 @@ Save prompts to `{workspace}/evals/evals.json`. Present to the user before runni
 
 This protocol was refined through 3 failed attempts. Follow it exactly.
 
-**Phase 1: Discover all instruction files**
+**Phase 1: Discover all instruction and memory files**
 
 ```bash
 # Find ALL instruction files in the project (monorepos have them in packages)
@@ -113,25 +113,34 @@ find {project-root} -name "CLAUDE.md" -o -name "AGENTS.md" \
   | grep -v node_modules | grep -v .git | sort
 ```
 
-Also check global config if testing global instructions:
+Also check global config and memory files if testing global instructions:
 ```bash
 ls -la ~/.claude/CLAUDE.md ~/.codex/AGENTS.md ~/.cursor/AGENTS.md 2>/dev/null
+# Memory files are also auto-loaded — include them too
+ls -d ~/.claude/projects/*/memory/ 2>/dev/null
 ```
 
 **Phase 2: Move ALL files to /tmp/ (not rename, not .bak)**
 
-Renaming to `.bak` in the same directory is weak — the model might still discover it. Move to `/tmp/` with directory structure preserved:
+Renaming to `.bak` in the same directory is weak — the model might still discover it. Move to `/tmp/` with directory structure preserved. Include memory files — there is no CLI flag to disable memory loading.
 
 ```bash
 BACKUP_DIR="/tmp/{project-name}-md-backup-$(date +%s)"
 mkdir -p "$BACKUP_DIR"
 
-# For each file found in Phase 1:
+# For each instruction file found in Phase 1:
 for f in {list of files}; do
   REL_PATH="${f#{project-root}/}"
   mkdir -p "$BACKUP_DIR/$(dirname $REL_PATH)"
   mv "$f" "$BACKUP_DIR/$REL_PATH"
 done
+
+# Also move memory directories if testing global instructions:
+if [ -d ~/.claude/projects ]; then
+  mkdir -p "$BACKUP_DIR/.claude-memory"
+  cp -r ~/.claude/projects/*/memory/ "$BACKUP_DIR/.claude-memory/" 2>/dev/null
+  find ~/.claude/projects -path "*/memory/MEMORY.md" -exec rm {} \; 2>/dev/null
+fi
 ```
 
 **Phase 3: Verify removal**
@@ -156,10 +165,15 @@ DO NOT restore files until every single baseline agent has finished and you have
 
 ```bash
 # Only after ALL baselines are done:
-for f in $(find "$BACKUP_DIR" -type f); do
+for f in $(find "$BACKUP_DIR" -type f -not -path "*/.claude-memory/*"); do
   REL_PATH="${f#$BACKUP_DIR/}"
   mv "$f" "{project-root}/$REL_PATH"
 done
+
+# Restore memory files if they were moved:
+if [ -d "$BACKUP_DIR/.claude-memory" ]; then
+  cp -r "$BACKUP_DIR/.claude-memory/"* ~/.claude/projects/ 2>/dev/null
+fi
 ```
 
 **Phase 7: Git checkout**
