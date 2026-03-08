@@ -161,7 +161,7 @@ DO NOT restore files until every single baseline agent has finished and you have
 
 ```bash
 # Only after ALL baselines are done:
-for f in $(find "$BACKUP_DIR" -type f -not -path "*/.claude-memory/*"); do
+for f in $(find "$BACKUP_DIR" -type f); do
   REL_PATH="${f#$BACKUP_DIR/}"
   mv "$f" "{project-root}/$REL_PATH"
 done
