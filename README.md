@@ -20,7 +20,7 @@ The rules that actually matter are the ones the codebase can't teach: coupling k
 ## Install
 
 ```bash
-npx skill add agents-md-evals
+npx skill add vltansky/agents-md-evals
 ```
 
 ## Usage
