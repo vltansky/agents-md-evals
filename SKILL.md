@@ -113,10 +113,9 @@ find {project-root} -name "CLAUDE.md" -o -name "AGENTS.md" \
   | grep -v node_modules | grep -v .git | sort
 ```
 
-Also check global config and memory files if testing global instructions:
+Also check user-level config and memory files — these are auto-loaded too:
 ```bash
 ls -la ~/.claude/CLAUDE.md ~/.codex/AGENTS.md ~/.cursor/AGENTS.md 2>/dev/null
-# Memory files are also auto-loaded — include them too
 ls -d ~/.claude/projects/*/memory/ 2>/dev/null
 ```
 
@@ -135,7 +134,12 @@ for f in {list of files}; do
   mv "$f" "$BACKUP_DIR/$REL_PATH"
 done
 
-# Also rename memory dirs if testing global instructions (safe to rename — not auto-discovered by name):
+# Rename user-level instruction files (safe to rename — outside project git):
+for f in ~/.claude/CLAUDE.md ~/.codex/AGENTS.md ~/.cursor/AGENTS.md; do
+  [ -f "$f" ] && mv "$f" "${f}.bak"
+done
+
+# Rename memory dirs (safe to rename — not auto-discovered by name):
 find ~/.claude/projects -type d -name "memory" -exec sh -c 'mv "$1" "${1}_bak"' _ {} \; 2>/dev/null
 ```
 
@@ -164,6 +168,11 @@ DO NOT restore files until every single baseline agent has finished and you have
 for f in $(find "$BACKUP_DIR" -type f); do
   REL_PATH="${f#$BACKUP_DIR/}"
   mv "$f" "{project-root}/$REL_PATH"
+done
+
+# Restore user-level instruction files:
+for f in ~/.claude/CLAUDE.md.bak ~/.codex/AGENTS.md.bak ~/.cursor/AGENTS.md.bak; do
+  [ -f "$f" ] && mv "$f" "${f%.bak}"
 done
 
 # Restore memory dirs:
