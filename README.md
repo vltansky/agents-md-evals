@@ -1,10 +1,10 @@
 # agents-md-evals
 
-Evaluate and optimize AGENTS.md/CLAUDE.md instruction files through controlled A/B testing. Discover which rules actually change model behavior vs. waste context tokens. Built on [Anthropic's skill-creator](https://github.com/anthropics/claude-code/tree/main/.claude/skills/skill-creator) eval framework.
+Evaluate and optimize AGENTS.md instruction files through controlled A/B testing. Discover which rules actually change model behavior vs. waste context tokens. Also handles CLAUDE.md and other AI instruction files. Built on [Anthropic's skill-creator](https://github.com/anthropics/claude-code/tree/main/.claude/skills/skill-creator) eval framework.
 
 ## The Problem
 
-Most AGENTS.md/CLAUDE.md files are 80-95% redundant. Models discover tech stack choices, library conventions, helper functions, and coding patterns by reading existing code. In controlled testing, **25 of 26 assertions passed identically** with and without a 755-line instruction file.
+Most AGENTS.md files are 80-95% redundant. Models discover tech stack choices, library conventions, helper functions, and coding patterns by reading existing code. In controlled testing, **25 of 26 assertions passed identically** with and without a 755-line instruction file.
 
 The rules that actually matter are the ones the codebase can't teach: coupling knowledge, workflow requirements, decision style preferences, and domain context.
 
@@ -27,10 +27,10 @@ npx skill add vltansky/agents-md-evals
 
 Ask Claude Code:
 - "eval my agents.md"
-- "test my claude.md"
-- "which rules in my CLAUDE.md actually matter?"
+- "which rules in my agents.md actually matter?"
 - "optimize my instructions"
 - "trim my agents file"
+- "test my claude.md"
 
 ## Key Concepts
 
