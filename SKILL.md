@@ -134,13 +134,15 @@ for f in {list of files}; do
   mv "$f" "$BACKUP_DIR/$REL_PATH"
 done
 
-# Rename user-level instruction files (safe to rename — outside project git):
+# User-level files: ASK before touching. These are outside the project.
+# "I found global instruction files and memory dirs that will contaminate baselines.
+#  OK to temporarily rename them? I'll restore immediately after."
+# Only proceed with explicit user consent:
 for f in ~/.claude/CLAUDE.md ~/.codex/AGENTS.md ~/.cursor/AGENTS.md; do
   [ -f "$f" ] && mv "$f" "${f}.bak"
 done
-
-# Rename memory dirs (safe to rename — not auto-discovered by name):
 find ~/.claude/projects -type d -name "memory" -exec sh -c 'mv "$1" "${1}_bak"' _ {} \; 2>/dev/null
+# If the user declines, note that baselines may be partially contaminated by global rules.
 ```
 
 **Phase 3: Verify removal**
@@ -172,7 +174,7 @@ for f in $(find "$BACKUP_DIR" -type f); do
   mv "$f" "{project-root}/$REL_PATH"
 done
 
-# Restore user-level instruction files:
+# Restore user-level files (if they were renamed with user consent):
 for f in ~/.claude/CLAUDE.md.bak ~/.codex/AGENTS.md.bak ~/.cursor/AGENTS.md.bak; do
   [ -f "$f" ] && mv "$f" "${f%.bak}"
 done
