@@ -161,10 +161,12 @@ Launch all baseline agents NOW. They start in a world with zero instruction file
 
 DO NOT restore files until every single baseline agent has finished and you have saved its timing data. This is critical — restoring early creates a race condition where agents that haven't fully initialized yet may pick up the restored files.
 
-**Phase 6: Restore all files**
+**Phase 6: Restore all files (ALWAYS — even if baselines errored)**
+
+Restoration is non-negotiable. If agents fail, time out, or you hit any error — restore FIRST, debug second. Leaving user config renamed breaks all future Claude sessions.
 
 ```bash
-# Only after ALL baselines are done:
+# Only after ALL baselines are done (or failed):
 for f in $(find "$BACKUP_DIR" -type f); do
   REL_PATH="${f#$BACKUP_DIR/}"
   mv "$f" "{project-root}/$REL_PATH"
