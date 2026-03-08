@@ -1,6 +1,6 @@
 # agents-md-evals
 
-Evaluate and optimize AGENTS.md/CLAUDE.md instruction files through controlled A/B testing. Discover which rules actually change model behavior vs. waste context tokens.
+Evaluate and optimize AGENTS.md/CLAUDE.md instruction files through controlled A/B testing. Discover which rules actually change model behavior vs. waste context tokens. Built on [Anthropic's skill-creator](https://github.com/anthropics/claude-code/tree/main/.claude/skills/skill-creator) eval framework.
 
 ## The Problem
 
