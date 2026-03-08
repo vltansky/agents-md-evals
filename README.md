@@ -19,8 +19,14 @@ The rules that actually matter are the ones the codebase can't teach: coupling k
 
 ## Install
 
+Clone into your Claude Code skills directory:
+
 ```bash
-npx skill add vltansky/agents-md-evals
+# Global (available in all projects)
+git clone https://github.com/vltansky/agents-md-evals.git ~/.claude/skills/agents-md-evals
+
+# Project-local
+git clone https://github.com/vltansky/agents-md-evals.git .claude/skills/agents-md-evals
 ```
 
 ## Usage
