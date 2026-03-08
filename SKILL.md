@@ -135,12 +135,8 @@ for f in {list of files}; do
   mv "$f" "$BACKUP_DIR/$REL_PATH"
 done
 
-# Also move memory directories if testing global instructions:
-if [ -d ~/.claude/projects ]; then
-  mkdir -p "$BACKUP_DIR/.claude-memory"
-  cp -r ~/.claude/projects/*/memory/ "$BACKUP_DIR/.claude-memory/" 2>/dev/null
-  find ~/.claude/projects -path "*/memory/MEMORY.md" -exec rm {} \; 2>/dev/null
-fi
+# Also rename memory files if testing global instructions (safe to rename — not auto-discovered by name):
+find ~/.claude/projects -path "*/memory/MEMORY.md" -exec sh -c 'mv "$1" "${1%.md}.bak.md"' _ {} \; 2>/dev/null
 ```
 
 **Phase 3: Verify removal**
@@ -170,10 +166,8 @@ for f in $(find "$BACKUP_DIR" -type f -not -path "*/.claude-memory/*"); do
   mv "$f" "{project-root}/$REL_PATH"
 done
 
-# Restore memory files if they were moved:
-if [ -d "$BACKUP_DIR/.claude-memory" ]; then
-  cp -r "$BACKUP_DIR/.claude-memory/"* ~/.claude/projects/ 2>/dev/null
-fi
+# Restore memory files:
+find ~/.claude/projects -path "*/memory/MEMORY.bak.md" -exec sh -c 'mv "$1" "${1%.bak.md}.md"' _ {} \; 2>/dev/null
 ```
 
 **Phase 7: Git checkout**
